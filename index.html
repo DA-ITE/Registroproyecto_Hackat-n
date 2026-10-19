@@ -257,11 +257,16 @@ async function syncProjectToServer(includeFiles=false){
   }catch(err){
     console.error(err);
     setBackendStatus('● Guardado local · pendiente de sincronizar','err');
-    toast('No se pudo enviar al consolidado: '+err.message);
+    const m=String(err&&err.message||err);
+    const hint=/anonymous/i.test(m)?'Supabase: falta activar "Allow anonymous sign-ins".'
+      :/row-level security|violates|Unauthorized|403/i.test(m)?'Supabase: falta la política de subida del bucket.'
+      :/Bucket not found/i.test(m)?'Supabase: no existe el bucket hackaton-docente-evidencias.'
+      :/exceeded|too large|413/i.test(m)?'El archivo supera el tamaño permitido.':'';
+    toast('No se pudo enviar: '+(hint||m),8000);
     return false;
   }finally{serverBusy=false}
 }
-function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
+let __tt;function toast(t,ms=1800){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(__tt);__tt=setTimeout(()=>el.classList.remove('show'),ms)}
 function invalid(id,on){$(`#${id}`).classList.toggle('invalid',!!on)}
 function showApp(screen){$('#loginScreen').classList.add('hidden');$('#appScreen').classList.remove('hidden');$('#teamScreen').classList.toggle('hidden',screen!=='team');$('#projectScreen').classList.toggle('hidden',screen!=='project');$('#headerTeam').textContent=data.teamName||data.groupName||'Equipo';}
 let hydrated=false;
