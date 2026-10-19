@@ -23,7 +23,21 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
 .mobile-section-select{display:none} .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#082f5a;color:#fff;padding:11px 15px;border-radius:12px;opacity:0;pointer-events:none;transition:.2s;z-index:100;font-size:12px;box-shadow:var(--shadow)} .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.login-main{grid-template-columns:1fr;gap:30px;padding-top:34px}.hero{text-align:center}.hero .redline{margin-left:auto;margin-right:auto}.hero-note{display:none}.login-card{width:min(520px,100%);margin:0 auto}.login-shell::after{width:180px;height:180px}.member-row{grid-template-columns:84px minmax(0,1fr) 180px}.project-layout{grid-template-columns:1fr}.side-nav{display:none}.mobile-section-select{display:block;margin-bottom:14px}}
 @media(max-width:640px){.login-head{height:70px;padding:0 18px;justify-content:center}.logos{gap:11px}.logos img.sise{height:27px}.cientifica-mark img{height:34px}.divider{height:27px}.login-main{width:min(94vw,540px);padding:34px 0 44px}.hero h1{font-size:56px;letter-spacing:-2px}.hero p{font-size:19px}.hero .redline{height:8px;width:110px;margin:17px auto 14px}.login-card{padding:22px;border-radius:20px}.topbar{height:70px;padding:0 12px}.hack-mini{font-size:15px}.topbar .logos{display:none}.team-chip strong{max-width:110px}.page{width:min(94vw,680px);padding-top:20px}.page-head{display:block}.save-status{display:inline-block;margin-top:10px}.team-card{padding:18px}.member-row{grid-template-columns:1fr;gap:8px}.member-index{padding:0}.team-actions{flex-direction:column-reverse}.team-actions .btn{width:100%}.project-card{padding:18px}.project-card-head{display:block}.badge{display:inline-block;margin-top:9px}.project-actions{gap:8px}.project-actions .btn{flex:1}.section-title{display:block}.section-title span{display:block;margin-top:5px}}
+ .upload-card{padding:24px;margin-top:18px}.upload-card h2{margin:0 0 10px;font-size:22px}.upload-card p{font-size:13px;line-height:1.6;color:var(--muted)}.upload-picker{display:inline-flex;background:#ff1550;color:#fff;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer;margin:10px 0}.upload-card input[type=file]{position:absolute;width:1px;height:1px;opacity:0}.upload-picker:focus-within{outline:3px solid #12c5ef}.file-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#f6fbff;border:1px solid #d6e3ef;border-radius:10px;margin-top:8px;font-size:13px;overflow-wrap:anywhere}.file-row button{border:0;background:#ffe9f0;color:#c61249;border-radius:8px;padding:7px 10px;cursor:pointer}.upload-warning{border-left:3px solid #d08a16;padding-left:10px}@media(max-width:640px){.upload-card{padding:18px}}
+
+.backend-status{display:inline-flex;align-items:center;gap:7px;margin-left:8px;font-size:11px;font-weight:850;padding:7px 10px;border-radius:999px;border:1px solid #d6e3ef;background:#fff;color:#637994}
+.backend-status.ok{background:#e9f8f2;border-color:#caecdf;color:#15966f}.backend-status.busy{background:#eaf7ff;border-color:#cde9f7;color:#0b66aa}.backend-status.err{background:#fff0f4;border-color:#ffd0dd;color:#c61249}
+@media(max-width:640px){.backend-status{margin:8px 0 0 0}}
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.HACKATON_SUPABASE_CONFIG={
+  url:'https://jjcalhhucqmpnlcrzeay.supabase.co',
+  publishableKey:'sb_publishable_pq14DnJ50J_cJumfxqeiKA_pvt22Eod',
+  bucket:'hackaton-docente-evidencias'
+};
+</script>
 </head>
 <body>
 
@@ -47,7 +61,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
       <h2>Ingreso por equipo</h2>
       <p>Accede para registrar y continuar el avance de tu proyecto.</p>
       <div class="field" id="fGroup"><label>Nombre del grupo *</label><div class="control"><input id="groupName" placeholder="Ej. Los Innovadores" autocomplete="organization"></div><span class="error">Ingresa el nombre del grupo.</span></div>
-      <div class="field" id="fChallenge"><label>Reto *</label><div class="control"><input id="challenge" list="challengeList" placeholder="Escribe o selecciona el reto"></div><datalist id="challengeList"><option value="Reto 1"><option value="Reto 2"><option value="Reto 3"><option value="Reto 4"><option value="Reto 5"></datalist><span class="error">Ingresa el reto del equipo.</span></div>
+      <div class="field" id="fChallenge"><label>Reto *</label><div class="control"><input id="challenge" list="challengeList" placeholder="Escribe o selecciona el reto"></div><datalist id="challengeList"><option value="Reto 1"><option value="Reto 2"><option value="Reto 3"><option value="Reto 4"></datalist><span class="error">Ingresa el reto del equipo.</span></div>
       <button class="btn btn-red wide" type="submit">Ingresar <span>→</span></button>
     </form>
   </main>
@@ -73,7 +87,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
 </section>
 
 <section class="page hidden" id="projectScreen">
-  <div class="page-head"><div><div class="eyebrow">Paso 2 · Desarrollo</div><h1>Registro del proyecto</h1><p id="projectContext">Completa las secciones del proyecto y conserva tu avance.</p></div><span class="save-status" id="projectSaveState">✓ Guardado automáticamente</span></div>
+  <div class="page-head"><div><div class="eyebrow">Paso 2 · Desarrollo</div><h1>Registro del proyecto</h1><p id="projectContext">Completa las secciones del proyecto y conserva tu avance.</p></div><div><span class="save-status" id="projectSaveState">✓ Guardado automáticamente</span><span class="backend-status" id="backendStatus">● Pendiente de sincronizar</span></div></div>
   <div class="card progress-card"><div class="progress-top"><span>Progreso del registro</span><span id="progressText">0 de 10 secciones</span></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
   <div class="mobile-section-select"><div class="control"><select id="mobileNav"></select></div></div>
   <div class="project-layout">
@@ -84,49 +98,266 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
       <div class="project-actions"><button class="btn btn-outline" id="prevBtn" type="button">← Anterior</button><button class="btn btn-red" id="nextBtn" type="button">Siguiente →</button></div>
     </main>
   </div>
-  <div class="footer-note">La información se guarda en este dispositivo. La conexión con una base institucional puede añadirse en la siguiente etapa.</div>
+  
+  <div class="footer-note">El avance se guarda localmente y, al configurar la conexión institucional, también se sincroniza con el panel de jurados y el consolidado.</div>
 </section>
 </div>
 <div class="toast" id="toast">Guardado.</div>
 
+<template id="pitchUploadsTemplate">
+  <section class="upload-card" aria-labelledby="uploadTitle">
+    <h2 id="uploadTitle">Evidencias y entregables del proyecto</h2>
+    <p>Adjunta tu presentación, documentos o evidencias del MVP. Puedes seleccionar <strong>más de un archivo</strong>. Solo se permiten archivos <strong>.pptx, .doc, .docx y .pdf</strong>.</p>
+    <label class="upload-picker" for="projectFiles">＋ Seleccionar archivos</label>
+    <input id="projectFiles" type="file" accept=".pptx,.doc,.docx,.pdf" multiple>
+    <div id="serverFiles"></div>
+    <div id="fileList" aria-live="polite"></div>
+    <div class="field" style="margin-top:18px">
+      <label for="projectLinks">Enlaces del proyecto (opcional)</label>
+      <div class="prompt">Agrega enlaces a prototipos, presentaciones en línea u otras evidencias; uno por línea. <strong>Los enlaces deben ser públicos y accesibles sin solicitar permisos ni iniciar sesión.</strong></div>
+      <div class="control"><textarea id="projectLinks" placeholder="https://..."></textarea></div>
+    </div>
+    <p class="upload-warning">Al guardar el proyecto, los archivos se enviarán a Supabase Storage y quedarán disponibles para descarga desde el panel de jurados.</p>
+  </section>
+</template>
+
 <script>
 const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
-const KEY='hackaton_docente_v1';
-const defaultData={groupName:'',challenge:'',teamName:'',members:Array.from({length:6},()=>({name:'',institution:''})),sections:{}};
-let data=load(); let current=0; let saveTimer;
+const KEY_PREFIX='hackaton_docente_v1_group_';
+// IMPORTANTE: debe ser EXACTAMENTE la misma URL /exec que usa el Panel de Jurados.
+const API_URL='https://script.google.com/macros/s/AKfycbw-7QSK3nVR_M1DHqZFzBropC5rgZniXlpiD0W1vQH1E-Oy7UeoZZxSP3_08Bpglm9v/exec';
+const API_TOKEN='SISE-HACKATON-2026';
+let serverSyncTimer=null, serverBusy=false;
+const attachments=[]; // Archivos seleccionados; el backend los almacena en Supabase Storage.
+const defaultData={groupName:'',challenge:'',teamName:'',members:Array.from({length:6},()=>({name:'',institution:''})),sections:{},projectLinks:''};
+function blankData(){return structuredClone(defaultData)}
+function groupStorageKey(group){return KEY_PREFIX+teamUid(String(group||'grupo'))}
+function loadGroup(group,challenge){
+  const fresh=blankData(); fresh.groupName=group||''; fresh.challenge=challenge||'';
+  try{
+    const raw=localStorage.getItem(groupStorageKey(group));
+    if(!raw)return fresh;
+    const saved=JSON.parse(raw)||{};
+    const merged=Object.assign(fresh,saved);
+    merged.groupName=group||saved.groupName||'';
+    merged.challenge=challenge||saved.challenge||'';
+    merged.members=Array.from({length:6},(_,i)=>Object.assign({name:'',institution:''},(saved.members||[])[i]||{}));
+    merged.sections=saved.sections||{};
+    merged.projectLinks=saved.projectLinks||'';
+    return merged;
+  }catch(e){return fresh}
+}
+let data=blankData(); let current=0; let saveTimer;
 const sections=[
  {group:'LÁMINA 1 – IDEACIÓN',icon:'◎',key:'problema',title:'Problema',help:'Describe el problema educativo identificado por el equipo.',fields:[['problem','¿Cuál es el problema principal?','Describe la situación, a quién afecta y por qué es relevante.'],['evidence','¿Qué evidencia sustenta este problema?','Puedes incluir datos, observaciones, entrevistas, experiencias en campo u otras fuentes relevantes.']]},
  {group:'LÁMINA 1 – IDEACIÓN',icon:'💡',key:'solucion',title:'Solución',help:'Explica la solución propuesta y cómo responde al problema.',fields:[['solution','¿Qué propone el equipo?','Describe la solución de manera clara y concreta.']]},
  {group:'LÁMINA 1 – IDEACIÓN',icon:'👥',key:'usuario',title:'Usuario final',help:'Define para quién se está diseñando la solución.',fields:[['user','¿Quién utilizará o recibirá la solución?','Describe el perfil principal del usuario o beneficiario.']]},
  {group:'LÁMINA 1 – IDEACIÓN',icon:'◇',key:'valor',title:'Propuesta de valor',help:'Sintetiza por qué la propuesta aporta valor.',fields:[['value','¿Qué valor esencial entrega la propuesta?','Explica qué mejora y por qué sería valiosa para el usuario.']]},
- {group:'LÁMINA 1 – IDEACIÓN',icon:'▥',key:'impacto',title:'Impacto',help:'Señala el cambio que esperan producir.',fields:[['impact','¿Qué impacto esperan generar?','Incluye un resultado observable o indicador de cambio.']]},
- {group:'LÁMINA 2 – MVP Y PITCH',icon:'▤',key:'resumen',title:'Resumen del proyecto',help:'Explica el proyecto de forma breve y comprensible.',fields:[['summary','Problema y solución en breve','Resume en pocas líneas qué problema atienden y cómo lo resolverán.']]},
- {group:'LÁMINA 2 – MVP Y PITCH',icon:'✦',key:'ia',title:'Herramientas de IA',help:'Registra cómo utilizaron IA de manera intencional.',fields:[['ai','¿Qué herramientas de IA utilizaron y para qué?','Describe herramienta, uso y aporte concreto al proceso.']]},
- {group:'LÁMINA 2 – MVP Y PITCH',icon:'⌘',key:'mercado',title:'Mercado y aliados',help:'Identifica actores, aliados o referentes relevantes.',fields:[['market','¿Qué actores o aliados podrían fortalecer la propuesta?','Instituciones, áreas, comunidades, proveedores u otros actores clave.']]},
+ {group:'LÁMINA 1 – IDEACIÓN',icon:'▥',key:'impacto',title:'Impacto',help:'Señala el cambio que esperan producir.',fields:[['impact','¿Qué impacto esperan generar?','Incluye indicadores verificables para medir los resultados esperados y el impacto potencial de la solución.']]},
+ {group:'LÁMINA 2 – MVP Y PITCH',icon:'▤',key:'resumen',title:'Resumen funcionamiento del MVP',help:'Explica el proyecto de forma breve y comprensible.',fields:[['summary','Problema y solución en breve','Resume en pocas líneas qué problema atienden y cómo lo resolverán.']]},
+ {group:'LÁMINA 2 – MVP Y PITCH',icon:'✦',key:'ia',title:'Herramientas de IA',help:'Registra cómo utilizaron IA de manera intencional.',fields:[['ai','Uso estratégico de tecnologías e inteligencia artificial','Coloca al menos 2 tecnologías institucionales (Canvas, Teams) con IA generativa, adaptativa o analítica.']]},
+ {group:'LÁMINA 2 – MVP Y PITCH',icon:'⌘',key:'mercado',title:'Mercado y aliados (opcional)',optional:true,help:'Identifica actores, aliados o referentes relevantes.',fields:[['market','¿Qué actores o aliados podrían fortalecer la propuesta?','Instituciones, áreas, comunidades, proveedores u otros actores clave.']]},
  {group:'LÁMINA 2 – MVP Y PITCH',icon:'★',key:'diferenciadores',title:'Diferenciadores',help:'Aclara qué hace distinta a la propuesta.',fields:[['difference','¿Qué diferencia esta solución de otras alternativas?','Describe 1 a 3 elementos concretos de diferenciación.']]},
- {group:'LÁMINA 2 – MVP Y PITCH',icon:'▶',key:'pitch',title:'Pitch final',help:'Prepara el mensaje final del equipo.',fields:[['pitch','Mensaje de pitch','Redacta una versión breve: problema, solución, valor, evidencia e impacto.']]},
+ {group:'LÁMINA 2 – MVP Y PITCH',icon:'▶',key:'pitch',title:'Pitch final',help:'Prepara el mensaje final del equipo.',fields:[['pitch','Mensaje de pitch','Recuerda que lo debes exponer máximo en 4 minutos, con una estructura clara, creativa y convincente que presenta el problema educativo, la solución, sus funcionalidades y su valor diferencial.']]},
 ];
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return x?Object.assign(structuredClone(defaultData),x):structuredClone(defaultData)}catch(e){return structuredClone(defaultData)}}
-function persist(show=false){localStorage.setItem(KEY,JSON.stringify(data)); if(show) toast('Avance guardado.'); clearTimeout(saveTimer); const st=$('#projectSaveState'); if(st){st.textContent='✓ Guardado automáticamente';}}
+function apiReady(){return /^https:\/\/script\.google\.com\//i.test(API_URL)}
+function setBackendStatus(text,kind=''){const el=$('#backendStatus');if(!el)return;el.textContent=text;el.className='backend-status'+(kind?' '+kind:'')}
+function persist(show=false,sync=true){
+  if(data.groupName)localStorage.setItem(groupStorageKey(data.groupName),JSON.stringify(data));
+  if(show)toast('Avance guardado localmente.');
+  clearTimeout(saveTimer);
+  const st=$('#projectSaveState');if(st)st.textContent='✓ Guardado automáticamente';
+  if(sync)scheduleServerSync();
+}
+function scheduleServerSync(){if(!apiReady()||!hydrated||!data.teamConfirmed||!data.teamName||!data.challenge)return;clearTimeout(serverSyncTimer);serverSyncTimer=setTimeout(()=>syncBasicTeam().catch(()=>{}),1200)}
+function teamUid(s=''){return String(s||'equipo').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||('team-'+Date.now())}
+
+const REMOTE_QUEUE_KEY='hackatonDocenteRemoteQueueV1';
+function readRemoteQueue(){try{return JSON.parse(localStorage.getItem(REMOTE_QUEUE_KEY)||'[]')||[]}catch(e){return []}}
+function writeRemoteQueue(q){try{localStorage.setItem(REMOTE_QUEUE_KEY,JSON.stringify(q.slice(-300)))}catch(e){}}
+function queueRemote(action,dataObj){const item={id:action+'__'+(dataObj.team?.teamName||dataObj.teamId||Date.now()),action,data:dataObj,at:new Date().toISOString()};const q=readRemoteQueue();const i=q.findIndex(x=>x.id===item.id);if(i>=0)q[i]=item;else q.push(item);writeRemoteQueue(q)}
+function postAppsScript(action,dataObj,timeoutMs=15000){
+  if(!apiReady())return Promise.reject(new Error('APPS_SCRIPT_ENDPOINT_NOT_CONFIGURED'));
+  return new Promise((resolve,reject)=>{
+    const frameName='hackatonPostFrame_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const iframe=document.createElement('iframe');
+    iframe.name=frameName;iframe.style.display='none';iframe.setAttribute('aria-hidden','true');
+    const form=document.createElement('form');
+    form.method='POST';form.action=API_URL;form.target=frameName;form.style.display='none';
+    const add=(name,value)=>{const i=document.createElement('input');i.type='hidden';i.name=name;i.value=value;form.appendChild(i)};
+    add('token',API_TOKEN);
+    add('payload',JSON.stringify({token:API_TOKEN,action,...dataObj}));
+    let finished=false;
+    const cleanup=(err)=>{if(finished)return;finished=true;clearTimeout(timer);setTimeout(()=>{try{form.remove()}catch(e){}try{iframe.remove()}catch(e){}},250);err?reject(err):resolve({ok:true,submitted:true})};
+    iframe.onload=()=>setTimeout(()=>cleanup(null),250);
+    const timer=setTimeout(()=>cleanup(new Error('Tiempo de espera al enviar al Web App.')),timeoutMs);
+    document.body.appendChild(iframe);document.body.appendChild(form);
+    try{form.submit()}catch(err){cleanup(err)}
+  });
+}
+function jsonpApi(action,params={},timeout=20000){return new Promise((resolve,reject)=>{
+  if(!apiReady())return reject(new Error('APPS_SCRIPT_ENDPOINT_NOT_CONFIGURED'));
+  const cb='__hackaton_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);const sc=document.createElement('script');let done=false;
+  const clean=(err,payload)=>{if(done)return;done=true;clearTimeout(timer);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove();err?reject(err):resolve(payload)};
+  window[cb]=j=>{if(!j||j.ok===false)clean(new Error((j&&j.error)||'Error de servidor'));else clean(null,j)};
+  const timer=setTimeout(()=>clean(new Error('Tiempo de espera agotado.')),timeout);
+  sc.onerror=()=>clean(new Error('No se pudo consultar el Web App.'));
+  const q=new URLSearchParams({token:API_TOKEN,action,callback:cb,_:Date.now().toString()});Object.entries(params||{}).forEach(([k,v])=>q.set(k,typeof v==='string'?v:JSON.stringify(v)));
+  sc.src=API_URL+'?'+q.toString();document.head.appendChild(sc);
+})}
+async function flushRemoteQueue(){if(!navigator.onLine||!apiReady())return;const q=readRemoteQueue(),pending=[];for(const it of q){try{await postAppsScript(it.action,it.data)}catch(e){pending.push(it)}}writeRemoteQueue(pending)}
+window.addEventListener('online',()=>flushRemoteQueue().catch(()=>{}));
+
+function evidenceClient(){const c=window.HACKATON_SUPABASE_CONFIG||{};if(!window.supabase?.createClient||!c.url||!c.publishableKey||c.publishableKey.includes('PEGA_AQUI'))return null;if(!window.__hackatonSb)window.__hackatonSb=window.supabase.createClient(c.url,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});return window.__hackatonSb}
+async function ensureEvidenceSession(){const sb=evidenceClient();if(!sb)throw new Error('Falta configurar la Publishable key de Supabase.');const s=await sb.auth.getSession();if(s.data?.session)return s.data.session;const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;return r.data?.session}
+function safeFileName(v){return String(v||'archivo').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9._-]+/g,'_').slice(0,140)}
+async function uploadEvidenceDirect(file,index){const sb=evidenceClient();const session=await ensureEvidenceSession();const cfg=window.HACKATON_SUPABASE_CONFIG||{},teamId=teamUid(data.teamName);const path=`${session.user.id}/${teamId}/${Date.now()}_${index}_${safeFileName(file.name)}`;const up=await sb.storage.from(cfg.bucket).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});if(up.error)throw up.error;const meta={teamId,teamName:data.teamName,name:file.name,type:file.type||'',size:file.size||0,bucket:cfg.bucket,path};try{await postAppsScript('registerEvidence',{evidence:meta})}catch(e){queueRemote('registerEvidence',{evidence:meta});throw e}return meta}
+async function uploadAllEvidence(){const uploaded=[];for(let i=0;i<attachments.length;i++)uploaded.push(await uploadEvidenceDirect(attachments[i],i));attachments.splice(0,attachments.length);return uploaded}
+function currentTeamPayload(){return {groupName:data.groupName,challenge:data.challenge,teamName:data.teamName,members:(data.members||[]).filter(m=>m.name&&m.name.trim()),sections:data.sections||{},links:(data.projectLinks||'').split(/\n+/).map(x=>x.trim()).filter(Boolean)}}
+async function syncBasicTeam(){
+  if(!apiReady()||!hydrated||!data.teamConfirmed||!data.teamName)return false;
+  const payload={team:currentTeamPayload()};
+  try{
+    setBackendStatus('● Enviando al consolidado…','busy');
+    await postAppsScript('upsertTeam',payload);
+    // El POST externo no puede leer de forma fiable la respuesta de Apps Script.
+    // Si el envío fue aceptado por el navegador, mostramos estado correcto y verificamos sin bloquear.
+    setBackendStatus('● Guardado en consolidado','ok');
+    const teamId=teamUid(data.teamName);
+    (async()=>{
+      for(let i=0;i<4;i++){
+        await new Promise(r=>setTimeout(r,900+i*350));
+        try{
+          const verify=await jsonpApi('team',{teamId},8000);
+          if(verify&&verify.team){setBackendStatus('● Sincronizado con consolidado','ok');return}
+        }catch(e){}
+      }
+      // No degradar a error si el POST ya fue enviado: evita falso "pendiente" cuando la fila sí existe.
+      setBackendStatus('● Guardado en consolidado','ok');
+    })();
+    return true;
+  }catch(e){
+    queueRemote('upsertTeam',payload);
+    setBackendStatus('● Guardado local · pendiente de sincronizar','err');
+    throw e;
+  }
+}
+async function syncSection(key){return syncBasicTeam()}
+async function syncProjectToServer(includeFiles=false){
+  if(!apiReady()){setBackendStatus('● Falta configurar conexión','err');return false}
+  if(serverBusy)return false;
+  serverBusy=true;
+  setBackendStatus('● Guardando proyecto…','busy');
+  try{
+    await syncBasicTeam();
+    if(includeFiles&&attachments.length){setBackendStatus('● Subiendo evidencias a Supabase…','busy');await uploadAllEvidence();await refreshServerEvidences()}
+    await flushRemoteQueue();
+    setBackendStatus('● Proyecto guardado en consolidado','ok');
+    return true;
+  }catch(err){
+    console.error(err);
+    setBackendStatus('● Guardado local · pendiente de sincronizar','err');
+    toast('No se pudo enviar al consolidado: '+err.message);
+    return false;
+  }finally{serverBusy=false}
+}
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
 function invalid(id,on){$(`#${id}`).classList.toggle('invalid',!!on)}
 function showApp(screen){$('#loginScreen').classList.add('hidden');$('#appScreen').classList.remove('hidden');$('#teamScreen').classList.toggle('hidden',screen!=='team');$('#projectScreen').classList.toggle('hidden',screen!=='project');$('#headerTeam').textContent=data.teamName||data.groupName||'Equipo';}
-$('#loginForm').addEventListener('submit',e=>{e.preventDefault();const g=$('#groupName').value.trim(),c=$('#challenge').value.trim();invalid('fGroup',!g);invalid('fChallenge',!c);if(!g||!c)return;data.groupName=g;data.challenge=c;if(!data.teamName)data.teamName=g;persist();renderTeam();showApp('team');});
+let hydrated=false;
+function applyServerTeam(t,challenge){
+  data.groupName=t.groupName||data.groupName;
+  data.challenge=challenge||t.challenge||data.challenge;
+  data.teamName=t.teamName||t.name||'';
+  data.members=Array.from({length:6},(_,i)=>Object.assign({name:'',institution:''},(t.members||[])[i]||{}));
+  data.sections=JSON.parse(JSON.stringify(t.sections||{}));
+  data.projectLinks=(t.links||[]).join('\n');
+  data.editedAt=Date.parse(t.updatedAtISO||'')||Date.now();
+}
+$('#loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const g=$('#groupName').value.trim(),c=$('#challenge').value.trim();
+  invalid('fGroup',!g);invalid('fChallenge',!c);if(!g||!c)return;
+  const btn=$('#loginForm button[type=submit]');btn.disabled=true;btn.firstChild.textContent='Verificando… ';
+  hydrated=false;
+  attachments.splice(0,attachments.length);
+  clearTimeout(serverSyncTimer);clearTimeout(saveTimer);
+  current=0;
+  const hasHistory=!!localStorage.getItem(groupStorageKey(g));
+  // Grupo nuevo en este dispositivo: ningún dato de otro grupo se reutiliza.
+  data=hasHistory?loadGroup(g,c):Object.assign(blankData(),{groupName:g,challenge:c});
+  let server=null,lookup='skip';
+  if(apiReady()){
+    setBackendStatus('● Buscando avance del grupo…','busy');
+    try{const r=await jsonpApi('teamByGroup',{group:g},12000);server=r.team||null;lookup=server?'found':'notfound'}
+    catch(err){console.warn(err);lookup='error'}
+  }
+  if(server){
+    const serverTime=Date.parse(server.updatedAtISO||'')||0, localTime=Number(data.editedAt||0);
+    if(!hasHistory||!data.teamConfirmed||serverTime>=localTime)applyServerTeam(server,c);
+    data.teamConfirmed=true;
+    data.serverEvidences=server.evidences||[];
+  }
+  hydrated=true;
+  persist(false,false);
+  renderTeam();
+  showApp('team');
+  btn.disabled=false;btn.firstChild.textContent='Ingresar ';
+  if(lookup==='found'){setBackendStatus('● Avance recuperado del consolidado','ok');toast('Avance del grupo recuperado. Pueden continuar desde cualquier dispositivo.',3500)}
+  else if(lookup==='error'){setBackendStatus('● No se pudo verificar el avance en línea','err');toast('No se pudo consultar el consolidado. Si ya registraron desde otro dispositivo, recarguen antes de escribir.',6000)}
+  else{setBackendStatus(hasHistory?'● Historial local cargado':'● Nuevo registro · sin datos previos',hasHistory?'ok':'');toast(hasHistory?'Historial de este grupo cargado.':'Nuevo grupo: registro limpio.')}
+});
 $('#backLogin').onclick=()=>{$('#appScreen').classList.add('hidden');$('#loginScreen').classList.remove('hidden')};
-function renderTeam(){$('#teamName').value=data.teamName||data.groupName||''; const box=$('#members');box.innerHTML='';data.members.forEach((m,i)=>{const row=document.createElement('div');row.className='member-row';row.innerHTML=`<div class="member-index">Integrante ${i+1}</div><div class="field"><label>Nombre y apellidos</label><div class="control"><input data-member-name="${i}" value="${esc(m.name)}" placeholder="Nombre completo"></div></div><div class="field"><label>Institución</label><div class="control"><select data-member-inst="${i}"><option value="">Selecciona</option><option ${m.institution==='SISE'?'selected':''}>SISE</option><option ${m.institution==='Científica'?'selected':''}>Científica</option></select></div></div>`;box.appendChild(row)}); $$('[data-member-name]').forEach(el=>el.addEventListener('input',()=>{data.members[+el.dataset.memberName].name=el.value;delayedSave()})); $$('[data-member-inst]').forEach(el=>el.addEventListener('change',()=>{data.members[+el.dataset.memberInst].institution=el.value;delayedSave()}));}
-function delayedSave(){clearTimeout(saveTimer);const st=$('#projectSaveState');if(st)st.textContent='Guardando…';saveTimer=setTimeout(()=>persist(),450)}
+function renderTeam(){$('#teamName').value=data.teamName||data.groupName||'';$('#teamName').readOnly=!!data.teamConfirmed;$('#teamName').title=data.teamConfirmed?'El nombre del equipo ya está registrado en el consolidado. Para cambiarlo, coordina con la organización.':''; const box=$('#members');box.innerHTML='';data.members.forEach((m,i)=>{const row=document.createElement('div');row.className='member-row';row.innerHTML=`<div class="member-index">Integrante ${i+1}</div><div class="field"><label>Nombre y apellidos</label><div class="control"><input data-member-name="${i}" value="${esc(m.name)}" placeholder="Nombre completo"></div></div><div class="field"><label>Institución</label><div class="control"><select data-member-inst="${i}"><option value="">Selecciona</option><option ${m.institution==='SISE'?'selected':''}>SISE</option><option ${m.institution==='Científica'?'selected':''}>Científica</option></select></div></div>`;box.appendChild(row)}); $$('[data-member-name]').forEach(el=>el.addEventListener('input',()=>{data.members[+el.dataset.memberName].name=el.value;delayedSave()})); $$('[data-member-inst]').forEach(el=>el.addEventListener('change',()=>{data.members[+el.dataset.memberInst].institution=el.value;delayedSave()}));}
+function delayedSave(){data.editedAt=Date.now();clearTimeout(saveTimer);const st=$('#projectSaveState');if(st)st.textContent='Guardando…';saveTimer=setTimeout(()=>persist(),450)}
 $('#teamName').addEventListener('input',e=>{data.teamName=e.target.value;$('#headerTeam').textContent=e.target.value||data.groupName;delayedSave()});
-$('#teamForm').addEventListener('submit',e=>{e.preventDefault();const name=$('#teamName').value.trim();invalid('fTeamName',!name);if(!name)return;data.teamName=name; const filled=data.members.filter(m=>m.name.trim()); if(!filled.length) return toast('Registra al menos un integrante.'); const missing=filled.some(m=>!m.institution); if(missing) return toast('Selecciona la institución de cada integrante registrado.'); persist();renderProject();showApp('project');});
+$('#teamForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=$('#teamName').value.trim();invalid('fTeamName',!name);if(!name)return;
+  const filled=data.members.filter(m=>m.name.trim());
+  if(!filled.length)return toast('Registra al menos un integrante.');
+  if(filled.some(m=>!m.institution))return toast('Selecciona la institución de cada integrante registrado.');
+  if(!data.teamConfirmed&&apiReady()){
+    try{
+      const r=await jsonpApi('team',{teamId:teamUid(name)},10000);
+      if(r.team&&teamUid(r.team.groupName||'')!==teamUid(data.groupName))return toast('Ese nombre de equipo ya lo usa otro grupo. Elige un nombre distinto.',5000);
+      if(r.team)data.serverEvidences=r.team.evidences||[];
+    }catch(err){console.warn(err)}
+  }
+  data.teamName=name;data.teamConfirmed=true;
+  persist(false,false);renderProject();showApp('project');
+  syncBasicTeam().catch(err=>{console.error(err);setBackendStatus('● Pendiente de conexión','err')});
+});
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function complete(sec){const obj=data.sections[sec.key]||{};return sec.fields.every(f=>(obj[f[0]]||'').trim().length>0)}
-function renderNav(){let html='',last='';sections.forEach((s,i)=>{if(s.group!==last){html+=`<div class="group-title">${s.group}</div>`;last=s.group} html+=`<button class="nav-item ${i===current?'active':''} ${complete(s)?'done':''}" data-index="${i}"><span class="nav-icon">${s.icon}</span><span>${s.title}</span><span class="counter">${complete(s)?'1/1':'0/1'}</span></button>`});$('#sideNav').innerHTML=html;$$('.nav-item').forEach(b=>b.onclick=()=>{current=+b.dataset.index;renderSection()}); const mob=$('#mobileNav');mob.innerHTML=sections.map((s,i)=>`<option value="${i}" ${i===current?'selected':''}>${i+1}. ${s.title}</option>`).join('');mob.onchange=e=>{current=+e.target.value;renderSection()};}
-function renderSection(){const s=sections[current],obj=data.sections[s.key]||{};$('#sectionTitle').textContent=s.title;$('#sectionHelp').textContent=s.help;$('#sectionBadge').textContent=complete(s)?'1 de 1':'Pendiente';$('#sectionBadge').style.background=complete(s)?'#e8f8f2':'#fff4df';$('#sectionBadge').style.color=complete(s)?'#15966f':'#a66a00';$('#sectionFields').innerHTML=s.fields.map(f=>`<div class="field"><label>${f[1]}</label><div class="prompt">${f[2]}</div><div class="control"><textarea maxlength="2000" data-field="${f[0]}" placeholder="Escribe aquí...">${esc(obj[f[0]]||'')}</textarea></div><div class="char"><span data-count="${f[0]}">${(obj[f[0]]||'').length}</span>/2000</div></div>`).join('');$$('[data-field]').forEach(t=>t.addEventListener('input',()=>{if(!data.sections[s.key])data.sections[s.key]={};data.sections[s.key][t.dataset.field]=t.value;const c=$(`[data-count="${t.dataset.field}"]`);if(c)c.textContent=t.value.length;updateProgress();delayedSave();renderNav()}));$('#prevBtn').disabled=current===0;$('#prevBtn').style.opacity=current===0?.45:1;$('#nextBtn').textContent=current===sections.length-1?'Guardar proyecto ✓':'Siguiente →';renderNav();updateProgress();}
-function updateProgress(){const done=sections.filter(complete).length;$('#progressText').textContent=`${done} de ${sections.length} secciones`;$('#progressFill').style.width=`${done/sections.length*100}%`;}
+function complete(sec){const obj=data.sections[sec.key]||{};return !!sec.optional || sec.fields.every(f=>(obj[f[0]]||'').trim().length>0)}
+function renderNav(){let html='',last='';sections.forEach((s,i)=>{if(s.group!==last){html+=`<div class="group-title">${s.group}</div>`;last=s.group} html+=`<button class="nav-item ${i===current?'active':''} ${complete(s)?'done':''}" data-index="${i}"><span class="nav-icon">${s.icon}</span><span>${s.title}</span><span class="counter">${s.optional?'Opcional':complete(s)?'1/1':'0/1'}</span></button>`});$('#sideNav').innerHTML=html;$$('.nav-item').forEach(b=>b.onclick=()=>{current=+b.dataset.index;renderSection()}); const mob=$('#mobileNav');mob.innerHTML=sections.map((s,i)=>`<option value="${i}" ${i===current?'selected':''}>${i+1}. ${s.title}</option>`).join('');mob.onchange=e=>{current=+e.target.value;renderSection()};}
+function renderSection(){const s=sections[current],obj=data.sections[s.key]||{};$('#sectionTitle').textContent=s.title;$('#sectionHelp').textContent=s.help;$('#sectionBadge').textContent=s.optional?'Opcional':complete(s)?'1 de 1':'Pendiente';$('#sectionBadge').style.background=complete(s)?'#e8f8f2':'#fff4df';$('#sectionBadge').style.color=complete(s)?'#15966f':'#a66a00';$('#sectionFields').innerHTML=s.fields.map(f=>`<div class="field"><label>${f[1]}</label><div class="prompt">${f[2]}</div><div class="control"><textarea maxlength="2000" data-field="${f[0]}" placeholder="Escribe aquí...">${esc(obj[f[0]]||'')}</textarea></div><div class="char"><span data-count="${f[0]}">${(obj[f[0]]||'').length}</span>/2000</div></div>`).join('')+(s.key==='pitch'?document.querySelector('#pitchUploadsTemplate').innerHTML:'');$$('[data-field]').forEach(t=>t.addEventListener('input',()=>{if(!data.sections[s.key])data.sections[s.key]={};data.sections[s.key][t.dataset.field]=t.value;const c=$(`[data-count="${t.dataset.field}"]`);if(c)c.textContent=t.value.length;updateProgress();delayedSave();renderNav();clearTimeout(serverSyncTimer);serverSyncTimer=setTimeout(()=>syncSection(s.key).catch(()=>{}),1200)}));$('#prevBtn').disabled=current===0;$('#prevBtn').style.opacity=current===0?.45:1;$('#nextBtn').textContent=current===sections.length-1?'Guardar proyecto ✓':'Siguiente →';if(s.key==='pitch')setupPitchUploads();renderNav();updateProgress();}
+function updateProgress(){const required=sections.filter(s=>!s.optional);const done=required.filter(complete).length;$('#progressText').textContent=`${done} de ${required.length} secciones obligatorias`;$('#progressFill').style.width=`${done/required.length*100}%`;}
 $('#prevBtn').onclick=()=>{if(current>0){current--;renderSection();window.scrollTo({top:0,behavior:'smooth'})}};
-$('#nextBtn').onclick=()=>{persist(true);if(current<sections.length-1){current++;renderSection();window.scrollTo({top:0,behavior:'smooth'})}else toast('Proyecto guardado en este dispositivo.')};
+$('#nextBtn').onclick=async()=>{persist(true);if(current<sections.length-1){current++;renderSection();window.scrollTo({top:0,behavior:'smooth'})}else{const ok=await syncProjectToServer(true);if(ok){toast('Proyecto enviado correctamente. Ya está disponible para los jurados.');setupPitchUploads()}else if(!apiReady()){toast('Proyecto guardado localmente. Configura la URL del Web App para enviarlo.')}}};
+
+async function refreshServerEvidences(){
+  try{const r=await jsonpApi('team',{teamId:teamUid(data.teamName)},10000);data.serverEvidences=r.team?.evidences||[];persist(false,false);paintServerFiles()}catch(e){}
+}
+function paintServerFiles(){
+  const box=$('#serverFiles');if(!box)return;
+  const ev=data.serverEvidences||[];
+  box.innerHTML=ev.length?'<div class="prompt" style="margin-top:10px"><strong>Archivos ya enviados ('+ev.length+'):</strong> visibles para los jurados.</div>'+ev.map(x=>`<div class="file-row"><span>✓ ${esc(x.name)}</span></div>`).join(''):'';
+}
+function setupPitchUploads(){
+ const input=$('#projectFiles'), list=$('#fileList'), links=$('#projectLinks');
+ paintServerFiles();
+ links.value=data.projectLinks||'';
+ links.addEventListener('input',()=>{data.projectLinks=links.value;delayedSave()});
+ function paint(){list.innerHTML='';attachments.forEach((file,i)=>{const row=document.createElement('div');row.className='file-row';const name=document.createElement('span');name.textContent=file.name;const remove=document.createElement('button');remove.type='button';remove.textContent='Quitar';remove.onclick=()=>{attachments.splice(i,1);paint()};row.append(name,remove);list.append(row)})}
+ input.addEventListener('change',()=>{for(const f of input.files){if(!/\.(pptx|doc|docx|pdf)$/i.test(f.name)){toast('Formato no permitido: '+f.name);continue}if(!attachments.some(a=>a.name===f.name&&a.size===f.size))attachments.push(f)}input.value='';paint()});
+ paint();
+}
 function renderProject(){$('#projectContext').textContent=`${data.teamName} · ${data.challenge}`;renderSection();}
-// Restore previous local session
-if(data.groupName){$('#groupName').value=data.groupName;$('#challenge').value=data.challenge||'';}
+// El login siempre inicia limpio. El historial se carga únicamente después de escribir el mismo nombre de grupo.
+$('#groupName').value='';
+$('#challenge').value='';
+if(apiReady()) setBackendStatus('● Conexión configurada · puedes ingresar','ok'); else setBackendStatus('● Falta URL del Web App','err');
 </script>
 </body>
 </html>
