@@ -211,7 +211,10 @@ window.addEventListener('online',()=>flushRemoteQueue().catch(()=>{}));
 function evidenceClient(){const c=window.HACKATON_SUPABASE_CONFIG||{};if(!window.supabase?.createClient||!c.url||!c.publishableKey||c.publishableKey.includes('PEGA_AQUI'))return null;if(!window.__hackatonSb)window.__hackatonSb=window.supabase.createClient(c.url,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});return window.__hackatonSb}
 async function ensureEvidenceSession(){const sb=evidenceClient();if(!sb)throw new Error('Falta configurar la Publishable key de Supabase.');const s=await sb.auth.getSession();if(s.data?.session)return s.data.session;const r=await sb.auth.signInAnonymously();if(r.error)throw r.error;return r.data?.session}
 function safeFileName(v){return String(v||'archivo').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9._-]+/g,'_').slice(0,140)}
-async function uploadEvidenceDirect(file,index){const sb=evidenceClient();const session=await ensureEvidenceSession();const cfg=window.HACKATON_SUPABASE_CONFIG||{},teamId=teamUid(data.teamName);const path=`${session.user.id}/${teamId}/${Date.now()}_${index}_${safeFileName(file.name)}`;const up=await sb.storage.from(cfg.bucket).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});if(up.error)throw up.error;const meta={teamId,teamName:data.teamName,name:file.name,type:file.type||'',size:file.size||0,bucket:cfg.bucket,path};try{await postAppsScript('registerEvidence',{evidence:meta})}catch(e){queueRemote('registerEvidence',{evidence:meta});throw e}return meta}
+async function uploadEvidenceDirect(file,index){const sb=evidenceClient();const session=await ensureEvidenceSession();const cfg=window.HACKATON_SUPABASE_CONFIG||{},teamId=teamUid(data.teamName);const path=`${session.user.id}/${teamId}/${Date.now()}_${index}_${safeFileName(file.name)}`;const up=await sb.storage.from(cfg.bucket).upload(path,file,{contentType:file.type||'application/octet-stream',upsert:false});if(up.error)throw up.error;const meta={teamId,teamName:data.teamName,name:file.name,type:file.type||'',size:file.size||0,bucket:cfg.bucket,path};let registered=false;
+ try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({token:API_TOKEN,action:'registerEvidence',evidence:meta}),redirect:'follow'});const j=JSON.parse(await r.text());if(j&&j.ok!==false)registered=true;else throw new Error(j&&j.error||'Error al registrar')}catch(e){console.warn('fetch registerEvidence falló, se usa respaldo',e)}
+ if(!registered){try{await postAppsScript('registerEvidence',{evidence:meta})}catch(e){queueRemote('registerEvidence',{evidence:meta})}}
+ return meta}
 async function uploadAllEvidence(){const uploaded=[];for(let i=0;i<attachments.length;i++)uploaded.push(await uploadEvidenceDirect(attachments[i],i));attachments.splice(0,attachments.length);return uploaded}
 function currentTeamPayload(){return {groupName:data.groupName,challenge:data.challenge,teamName:data.teamName,members:(data.members||[]).filter(m=>m.name&&m.name.trim()),sections:data.sections||{},links:(data.projectLinks||'').split(/\n+/).map(x=>x.trim()).filter(Boolean)}}
 async function syncBasicTeam(){
@@ -250,7 +253,7 @@ async function syncProjectToServer(includeFiles=false){
   setBackendStatus('● Guardando proyecto…','busy');
   try{
     await syncBasicTeam();
-    if(includeFiles&&attachments.length){setBackendStatus('● Subiendo evidencias a Supabase…','busy');await uploadAllEvidence();await refreshServerEvidences()}
+    if(includeFiles&&attachments.length){setBackendStatus('● Subiendo evidencias…','busy');serverBusy=false;await processUploads();serverBusy=true}
     await flushRemoteQueue();
     setBackendStatus('● Proyecto guardado en consolidado','ok');
     return true;
@@ -349,14 +352,66 @@ function paintServerFiles(){
   const ev=data.serverEvidences||[];
   box.innerHTML=ev.length?'<div class="prompt" style="margin-top:10px"><strong>Archivos ya enviados ('+ev.length+'):</strong> visibles para los jurados.</div>'+ev.map(x=>`<div class="file-row"><span>✓ ${esc(x.name)}</span></div>`).join(''):'';
 }
+const uploadState=new Map(); // file -> {status:'wait'|'up'|'ok'|'err', msg}
+let uploadingNow=false;
+function friendlyUploadError(m){m=String(m||'');return /anonymous/i.test(m)?'Supabase: inicio de sesión anónimo desactivado.'
+ :/row-level security|violates|Unauthorized|403/i.test(m)?'Supabase: falta la política de subida.'
+ :/Failed to fetch|NetworkError|network/i.test(m)?'Sin conexión con el servidor de archivos (revisa internet o si la red bloquea supabase.co).'
+ :/exceeded|too large|413/i.test(m)?'El archivo es demasiado grande.':m}
+async function processUploads(){
+ if(uploadingNow)return;
+ if(!data.teamConfirmed){toast('Primero confirma el nombre del equipo.');return}
+ uploadingNow=true;
+ try{
+  for(const f of attachments.slice()){
+   const st=uploadState.get(f)||{};if(st.status==='ok'||st.status==='up')continue;
+   uploadState.set(f,{status:'up'});paintUploads();
+   try{
+    await uploadEvidenceDirect(f,attachments.indexOf(f));
+    uploadState.set(f,{status:'ok'});
+    const k=attachments.indexOf(f);if(k>=0)attachments.splice(k,1);
+   }catch(err){console.error(err);uploadState.set(f,{status:'err',msg:friendlyUploadError(err&&err.message||err)})}
+   paintUploads();
+  }
+  await refreshServerEvidences();
+  const bad=attachments.filter(f=>uploadState.get(f)?.status==='err').length;
+  if(bad)toast(`${bad} archivo(s) no se pudieron enviar. Pulsa «Reintentar».`,6000);else toast('Evidencias enviadas. Ya son visibles para los jurados.',3500);
+ }finally{uploadingNow=false;paintUploads()}
+}
+function paintUploads(){
+ const list=$('#fileList');if(!list)return;list.innerHTML='';
+ attachments.forEach((file,i)=>{const st=uploadState.get(file)||{status:'wait'};
+  const row=document.createElement('div');row.className='file-row';
+  const name=document.createElement('span');
+  name.textContent=(st.status==='up'?'⏳ Subiendo… ':st.status==='err'?'❌ ':'• ')+file.name+(st.status==='err'?' — '+st.msg:'');
+  if(st.status==='err')name.style.color='#c61249';
+  row.append(name);
+  if(st.status!=='up'){
+   if(st.status==='err'){const retry=document.createElement('button');retry.type='button';retry.textContent='Reintentar';retry.onclick=()=>{uploadState.delete(file);processUploads()};row.append(retry)}
+   const remove=document.createElement('button');remove.type='button';remove.textContent='Quitar';remove.onclick=()=>{attachments.splice(i,1);uploadState.delete(file);paintUploads()};row.append(remove)}
+  list.append(row)});
+}
 function setupPitchUploads(){
- const input=$('#projectFiles'), list=$('#fileList'), links=$('#projectLinks');
+ const input=$('#projectFiles'), links=$('#projectLinks');
+ if(!input)return;
  paintServerFiles();
+ if(input.dataset.bound==='1'){paintUploads();return}
+ input.dataset.bound='1';
  links.value=data.projectLinks||'';
  links.addEventListener('input',()=>{data.projectLinks=links.value;delayedSave()});
- function paint(){list.innerHTML='';attachments.forEach((file,i)=>{const row=document.createElement('div');row.className='file-row';const name=document.createElement('span');name.textContent=file.name;const remove=document.createElement('button');remove.type='button';remove.textContent='Quitar';remove.onclick=()=>{attachments.splice(i,1);paint()};row.append(name,remove);list.append(row)})}
- input.addEventListener('change',()=>{for(const f of input.files){if(!/\.(pptx|doc|docx|pdf)$/i.test(f.name)){toast('Formato no permitido: '+f.name);continue}if(!attachments.some(a=>a.name===f.name&&a.size===f.size))attachments.push(f)}input.value='';paint()});
- paint();
+ input.addEventListener('change',()=>{
+  let added=0;
+  for(const f of input.files){
+   if(!/\.(pptx|doc|docx|pdf)$/i.test(f.name)){toast('Formato no permitido: '+f.name+' (solo .pptx, .doc, .docx, .pdf)',5000);continue}
+   if(f.size>50*1024*1024){toast('El archivo supera 50 MB: '+f.name,5000);continue}
+   if(!attachments.some(a=>a.name===f.name&&a.size===f.size)){attachments.push(f);added++}
+  }
+  input.value='';paintUploads();
+  if(added)processUploads();   // subida inmediata al seleccionar
+ });
+ paintUploads();
+ if(attachments.length)processUploads();
+ refreshServerEvidences();
 }
 function renderProject(){$('#projectContext').textContent=`${data.teamName} · ${data.challenge}`;renderSection();}
 // El login siempre inicia limpio. El historial se carga únicamente después de escribir el mismo nombre de grupo.
